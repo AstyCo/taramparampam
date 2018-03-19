@@ -34,6 +34,10 @@
  * \defgroup mesh Meshes
  */
 
+double length3dsVector(const Lib3dsVector p)
+{
+    return sqrt(p[0]*p[0]+p[1]*p[1]+p[2]*p[2]);
+}
 
 static Lib3dsBool
 face_array_read(Lib3dsMesh *mesh, Lib3dsIo *io)
@@ -568,7 +572,7 @@ lib3ds_mesh_dump(Lib3dsMesh *mesh)
   Lib3dsVector p;
 
   ASSERT(mesh);
-  printf("  %s vertices=%ld faces=%ld\n",
+  printf("  %s vertices=%ld faces=%lu\n",
     mesh->name,
     mesh->points,
     mesh->faces
@@ -670,7 +674,7 @@ lib3ds_mesh_read(Lib3dsMesh *mesh, Lib3dsIo *io)
         break;
       case LIB3DS_FACE_ARRAY:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!face_array_read(mesh, io)) {
             return(LIB3DS_FALSE);
           }
@@ -1053,4 +1057,5 @@ lib3ds_mesh_write(Lib3dsMesh *mesh, Lib3dsIo *io)
   }
   return(LIB3DS_TRUE);
 }
+
 

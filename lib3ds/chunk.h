@@ -272,7 +272,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_chunk_read(Lib3dsChunk *c, Lib3dsIo *io);
 extern LIB3DSAPI Lib3dsBool lib3ds_chunk_read_start(Lib3dsChunk *c, Lib3dsWord chunk, Lib3dsIo *io);
 extern LIB3DSAPI void lib3ds_chunk_read_tell(Lib3dsChunk *c, Lib3dsIo *io);
 extern LIB3DSAPI Lib3dsWord lib3ds_chunk_read_next(Lib3dsChunk *c, Lib3dsIo *io);
-extern LIB3DSAPI void lib3ds_chunk_read_reset(Lib3dsChunk *c, Lib3dsIo *io);
+extern LIB3DSAPI void lib3ds_chunk_read_reset(Lib3dsIo *io);
 extern LIB3DSAPI void lib3ds_chunk_read_end(Lib3dsChunk *c, Lib3dsIo *io);
 extern LIB3DSAPI Lib3dsBool lib3ds_chunk_write(Lib3dsChunk *c, Lib3dsIo *io);
 extern LIB3DSAPI Lib3dsBool lib3ds_chunk_write_start(Lib3dsChunk *c, Lib3dsIo *io);

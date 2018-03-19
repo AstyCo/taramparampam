@@ -1403,19 +1403,6 @@ lib3ds_morph_track_read(Lib3dsMorphTrack *track, Lib3dsIo *io)
 }
 
 
-/*!
- * \ingroup tracks 
- */
-Lib3dsBool
-lib3ds_morph_track_write(Lib3dsMorphTrack *track, Lib3dsIo *io)
-{
-  /* FIXME: */
-  ASSERT(0);
-  return(LIB3DS_FALSE);
-}
-
-
-
 void
 tcb_dump(Lib3dsTcb *tcb)
 {
@@ -1548,5 +1535,7 @@ lib3ds_dump_tracks(Lib3dsNode *node)
       printf("pos: ");
       lib3ds_lin3Track_dump(&node->data.spot.pos_track);
       break;
+  default:
+      ASSERT(0);
   }
 }

@@ -200,7 +200,6 @@ extern LIB3DSAPI void lib3ds_morph_track_insert(Lib3dsMorphTrack *track, Lib3dsM
 extern LIB3DSAPI void lib3ds_morph_track_remove(Lib3dsMorphTrack *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_morph_track_eval(Lib3dsMorphTrack *track, char *p, Lib3dsFloat t);
 extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_read(Lib3dsMorphTrack *track, Lib3dsIo *io);
-extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_write(Lib3dsMorphTrack *track, Lib3dsIo *io);
 
 #ifdef __cplusplus
 }

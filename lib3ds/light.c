@@ -31,9 +31,6 @@
  * \defgroup light Lights
  */
 /*!
-
-
-/*!
  * \ingroup light
  */
 Lib3dsLight*
@@ -252,7 +249,7 @@ lib3ds_light_read(Lib3dsLight *light, Lib3dsIo *io)
         break;
       case LIB3DS_DL_SPOTLIGHT:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!spotlight_read(light, io)) {
             return(LIB3DS_FALSE);
           }

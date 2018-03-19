@@ -22,8 +22,13 @@ All models are loaded and renderd using this class
 #include <vector>
 #include <GL/gl.h>
 
+#include <QVector>
+#include <QMap>
+#include <QString>
+
 using namespace std;
 
+namespace lib3ds_qt {
 
 /// This class can load a model, and then apply a texture on it to finally render it
 class LIB3DS_QTSHARED_EXPORT Model
@@ -34,29 +39,33 @@ public:
 
     /// It loads the file 'name', sets the current frame to 0 and if the model has textures, it will be applied to the model
     void loadFile(const char *name);
-    /// Creates a display list that sets all the information for the lights.
-    void CreateLightList();
-    /// It renders the node specified by the argument and sets material properties to the node if nescesary
-    void renderNode(Lib3dsNode *node);
-    /// Enables all lights in the model if not already enabled
-    void EnableLights();
-    /// Disables all lights in the model if not already disabled
-    void DisableLights();
-    /// It renders the model, by rendering node by node using the renderNode function.But before it's renderd it's translated to (x,y,z) and then rotates it angle degrees
 
+    void prepareNodes();
+    void prepareNode(Lib3dsNode *node);
+    int countOfNodesToPrepare() const;
+    int countOfNodesToPrepare(Lib3dsNode *node) const;
     void RenderModel();
     /// It applies a texture to mesh ,according to the data that mesh contains
     void ApplyTexture(Lib3dsMesh *mesh);
     Lib3dsFile * get3DSPointer();
-    string getFilename();
+    const QString &getFilename() const;
+
+    bool isValid() const;
+    bool isValidRadius() const;
+    double meshRadius() const;
 private:
-    Lib3dsFile *file; /**< file holds the data of the model */
-    const char *filename; /**< It's the filename of the model */
-    int curFrame; /**< curFrame keeps track of the current frame that shuold be renderd */
-    vector<GLuint> textureIndices; /**< this variable holds the texture indicies */
-    vector<string> textureFilenames; /**< Holds the filenames of the textures, so I can see wheter a texture is used multiple times or not */
-    bool lightEnabled; /**< wheter light was enabled before this class. */
-    GLuint lightListIndex;
+    Lib3dsFile *_file3ds; /**< file holds the data of the model */
+    QString _fileName; /**< It's the filename of the model */
+    QMap<QString, GLuint> _textureFilenamesIndexes;
+    typedef QMap<QString, GLuint>::iterator MapIterator;
+
+    int _base;
+    int _size;
+    GLuint _nodeIndex;
+    QVector<GLuint> _glListIndexes;
+    double _meshRadius;
 };
+
+} // namespace lib3ds_qt
 
 #endif // MODEL_H

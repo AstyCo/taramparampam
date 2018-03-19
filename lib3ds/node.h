@@ -178,7 +178,7 @@ extern LIB3DSAPI Lib3dsNode* lib3ds_node_by_name(Lib3dsNode *node, const char* n
   Lib3dsNodeTypes type);
 extern LIB3DSAPI Lib3dsNode* lib3ds_node_by_id(Lib3dsNode *node, Lib3dsWord node_id);
 extern LIB3DSAPI void lib3ds_node_dump(Lib3dsNode *node, Lib3dsIntd level);
-extern LIB3DSAPI Lib3dsBool lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *file, Lib3dsIo *io);
+extern LIB3DSAPI Lib3dsBool lib3ds_node_read(Lib3dsNode *node, Lib3dsIo *io);
 extern LIB3DSAPI Lib3dsBool lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, Lib3dsIo *io);
 
 #ifdef __cplusplus

@@ -128,7 +128,7 @@ lib3ds_background_read(Lib3dsBackground *background, Lib3dsIo *io)
       break;
     case LIB3DS_SOLID_BGND:
       {
-        lib3ds_chunk_read_reset(&c, io);
+        lib3ds_chunk_read_reset( io);
         if (!solid_bgnd_read(background, io)) {
           return(LIB3DS_FALSE);
         }
@@ -136,7 +136,7 @@ lib3ds_background_read(Lib3dsBackground *background, Lib3dsIo *io)
       break;
     case LIB3DS_V_GRADIENT:
       {
-        lib3ds_chunk_read_reset(&c, io);
+        lib3ds_chunk_read_reset(io);
         if (!v_gradient_read(background, io)) {
           return(LIB3DS_FALSE);
         }

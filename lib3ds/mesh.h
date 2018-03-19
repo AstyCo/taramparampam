@@ -39,6 +39,10 @@ typedef struct Lib3dsPoint {
     Lib3dsVector pos;
 } Lib3dsPoint;
 
+
+double length3dsVector(const Lib3dsVector p);
+
+
 /**
  * Triangular mesh face
  * \ingroup mesh

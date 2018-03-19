@@ -77,3 +77,6 @@ unix {
 
 DISTFILES += \
     lib3ds/types.txt
+
+
+include(build_config.pri)

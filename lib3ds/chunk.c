@@ -41,14 +41,14 @@ static char lib3ds_chunk_level[128]="";
 
 
 static void
-lib3ds_chunk_debug_enter(Lib3dsChunk *c)
+lib3ds_chunk_debug_enter()
 {
   strcat(lib3ds_chunk_level, "  ");
 }
 
 
 static void
-lib3ds_chunk_debug_leave(Lib3dsChunk *c)
+lib3ds_chunk_debug_leave()
 {
   lib3ds_chunk_level[strlen(lib3ds_chunk_level)-2]=0;
 }
@@ -58,7 +58,7 @@ static void
 lib3ds_chunk_debug_dump(Lib3dsChunk *c)
 {
   if (enable_dump) {
-    printf("%s%s (0x%X) size=%lu\n",
+    printf("%s%s (0x%X) size= %lu \n",
       lib3ds_chunk_level,
       lib3ds_chunk_name(c->chunk),
       c->chunk,
@@ -118,7 +118,7 @@ lib3ds_chunk_read_start(Lib3dsChunk *c, Lib3dsWord chunk, Lib3dsIo *io)
   if (!lib3ds_chunk_read(c, io)) {
     return(LIB3DS_FALSE);
   }
-  lib3ds_chunk_debug_enter(c);
+  lib3ds_chunk_debug_enter();
   return((chunk==0) || (c->chunk==chunk));
 }
 
@@ -159,7 +159,7 @@ lib3ds_chunk_read_next(Lib3dsChunk *c, Lib3dsIo *io)
  * \ingroup chunk
  */
 void
-lib3ds_chunk_read_reset(Lib3dsChunk *c, Lib3dsIo *io)
+lib3ds_chunk_read_reset(Lib3dsIo *io)
 {
   lib3ds_io_seek(io, -6, LIB3DS_SEEK_CUR);
 }
@@ -171,7 +171,7 @@ lib3ds_chunk_read_reset(Lib3dsChunk *c, Lib3dsIo *io)
 void
 lib3ds_chunk_read_end(Lib3dsChunk *c, Lib3dsIo *io)
 {
-  lib3ds_chunk_debug_leave(c);
+  lib3ds_chunk_debug_leave();
   lib3ds_io_seek(io, c->end, LIB3DS_SEEK_SET);
 }
 

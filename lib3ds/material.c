@@ -410,7 +410,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_AMBIENT:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!color_read(material->ambient, io)) {
             return(LIB3DS_FALSE);
           }
@@ -418,7 +418,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_DIFFUSE:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!color_read(material->diffuse, io)) {
             return(LIB3DS_FALSE);
           }
@@ -426,7 +426,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SPECULAR:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!color_read(material->specular, io)) {
             return(LIB3DS_FALSE);
           }
@@ -434,7 +434,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SHININESS:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->shininess, io)) {
             return(LIB3DS_FALSE);
           }
@@ -442,7 +442,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SHIN2PCT:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->shin_strength, io)) {
             return(LIB3DS_FALSE);
           }
@@ -450,7 +450,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_TRANSPARENCY:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->transparency, io)) {
             return(LIB3DS_FALSE);
           }
@@ -458,7 +458,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_XPFALL:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->falloff, io)) {
             return(LIB3DS_FALSE);
           }
@@ -466,7 +466,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SELF_ILPCT:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->self_ilpct, io)) {
             return(LIB3DS_FALSE);
           }
@@ -479,7 +479,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_REFBLUR:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!int_percentage_read(&material->blur, io)) {
             return(LIB3DS_FALSE);
           }
@@ -542,7 +542,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_TEXMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->texture1_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -550,7 +550,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_TEXMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->texture1_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -558,7 +558,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_TEX2MAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->texture2_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -566,7 +566,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_TEX2MASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->texture2_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -574,7 +574,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_OPACMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->opacity_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -582,7 +582,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_OPACMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->opacity_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -590,7 +590,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_BUMPMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->bump_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -598,7 +598,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_BUMPMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->bump_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -606,7 +606,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SPECMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->specular_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -614,7 +614,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SPECMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->specular_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -622,7 +622,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SHINMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->shininess_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -630,7 +630,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SHINMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->shininess_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -638,7 +638,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SELFIMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->self_illum_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -646,7 +646,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_SELFIMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->self_illum_mask, io)) {
             return(LIB3DS_FALSE);
           }
@@ -654,7 +654,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_REFLMAP:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->reflection_map, io)) {
             return(LIB3DS_FALSE);
           }
@@ -662,7 +662,7 @@ lib3ds_material_read(Lib3dsMaterial *material, Lib3dsIo *io)
         break;
       case LIB3DS_MAT_REFLMASK:
         {
-          lib3ds_chunk_read_reset(&c, io);
+          lib3ds_chunk_read_reset( io);
           if (!texture_map_read(&material->reflection_mask, io)) {
             return(LIB3DS_FALSE);
           }
