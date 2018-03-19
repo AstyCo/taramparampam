@@ -25,10 +25,24 @@ All models are loaded and renderd using this class
 #include <QVector>
 #include <QMap>
 #include <QString>
+#include <QVector3D>
+
+#include <QPoint>
 
 using namespace std;
 
 namespace lib3ds_qt {
+
+struct Mesh
+{
+    GLuint _textureID;
+    QVector<GLfloat> _vertices;
+    QVector<GLushort> _indices;
+    QVector<GLfloat> _normals;
+    QVector<GLfloat> _textureVertices;
+
+    Mesh() : _textureID(-1) {}
+};
 
 /// This class can load a model, and then apply a texture on it to finally render it
 class LIB3DS_QTSHARED_EXPORT Model
@@ -42,9 +56,9 @@ public:
 
     void prepareNodes();
     void prepareNode(Lib3dsNode *node);
-    int countOfNodesToPrepare() const;
-    int countOfNodesToPrepare(Lib3dsNode *node) const;
-    void RenderModel();
+    void initGL();
+    void renderModel();
+    void renderMesh(const Mesh &mesh);
     /// It applies a texture to mesh ,according to the data that mesh contains
     void ApplyTexture(Lib3dsMesh *mesh);
     Lib3dsFile * get3DSPointer();
@@ -53,17 +67,20 @@ public:
     bool isValid() const;
     bool isValidRadius() const;
     double meshRadius() const;
+
+    QVector3D getMin() const;
+    QVector3D getMax() const;
+    void centerModel();
 private:
     Lib3dsFile *_file3ds; /**< file holds the data of the model */
     QString _fileName; /**< It's the filename of the model */
     QMap<QString, GLuint> _textureFilenamesIndexes;
     typedef QMap<QString, GLuint>::iterator MapIterator;
 
-    int _base;
-    int _size;
-    GLuint _nodeIndex;
-    QVector<GLuint> _glListIndexes;
+    QList<Mesh> _meshes;
+    QList<Lib3dsNode*> _nodes;
     double _meshRadius;
+    bool _isValid;
 };
 
 } // namespace lib3ds_qt
