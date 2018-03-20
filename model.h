@@ -61,14 +61,14 @@ public:
     ~Model(); /// RAII -> free file, free textures
 
     /// It loads the file 'name', sets the current frame to 0 and if the model has textures, it will be applied to the model
-    void loadFile(const char *name);
+    void loadFile(const QString &name, const QString &pathToFile = QString());
 
     void prepareNodes();
     void prepareNode(Lib3dsNode *node);
     void renderModel();
     void renderMesh(const Mesh &mesh);
     /// It applies a texture to mesh ,according to the data that mesh contains
-    void ApplyTexture(Lib3dsMesh *mesh);
+    void ApplyTexture(Lib3dsMesh *mesh, const QString &extraPath = QString());
     Lib3dsFile * get3DSPointer();
     const QString &getFilename() const;
 

@@ -32,6 +32,7 @@ This is the place were all the functions are 'defined'
 #include <qmath.h>
 
 #include <QDebug>
+#include <QDir>
 
 using namespace lib3ds_qt;
 
@@ -119,13 +120,17 @@ Model::~Model()
     MapIterator it(_textureFilenamesIndexes.begin());
     while (it != _textureFilenamesIndexes.end()) {
         glDeleteTextures(1, &it.value());
+        ++it;
     }
 }
 
 // load the model, and if the texture has textures, then apply them on the geometric primitives
-void Model::loadFile(const char *name)
+void Model::loadFile(const QString &name, const QString &pathToFile)
 {
-    _fileName = name;
+    if (pathToFile.isEmpty())
+        _fileName = name;
+    else
+        _fileName = pathToFile + QDir::separator() + name;
     // load file
     _file3ds = lib3ds_file_load(_fileName.toLatin1().constData());
     if(!_file3ds) // if we were not able to load the file
@@ -145,7 +150,7 @@ void Model::loadFile(const char *name)
     for(mesh = _file3ds->meshes; mesh != 0;mesh = mesh->next)
     {
         if(mesh->texels) //if there's texels for the mesh
-            ApplyTexture(mesh); //then apply texture to it
+            ApplyTexture(mesh, pathToFile); //then apply texture to it
     }
 
     prepareNodes();
@@ -236,7 +241,7 @@ void Model::prepareNode(Lib3dsNode *node)
 }
 
 // what is basicly does is, set the properties of the texture for our mesh
-void Model::ApplyTexture(Lib3dsMesh *mesh)
+void Model::ApplyTexture(Lib3dsMesh *mesh, const QString &extraPath)
 {
     for(unsigned int i = 0;i < mesh->faces;i++)
     {
@@ -249,8 +254,13 @@ void Model::ApplyTexture(Lib3dsMesh *mesh)
         QString textureName = mat->texture1_map.name;
         if (!_textureFilenamesIndexes.contains(textureName))
         {
-            qDebug() << "texture name" << textureName;
-            GLuint tmpIndex = generateTextureStatic(textureName, 0); // temporary index to old the place of our texture
+            qDebug() << "loading texture" << textureName;
+            QString textureFullFilename;
+            if (!extraPath.isEmpty())
+                textureFullFilename = extraPath + QDir::separator() + textureName;
+            else
+                textureFullFilename = textureName;
+            GLuint tmpIndex = generateTextureStatic(textureFullFilename, 0); // temporary index to old the place of our texture
             _textureFilenamesIndexes.insert(mat->texture1_map.name, tmpIndex);
         }
     }
