@@ -96,7 +96,7 @@ static GLuint generateTextureStatic(const QString &name, int lightFactor)
     GL_CHECK( glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
     GL_CHECK( glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
     GL_CHECK( glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-    GL_CHECK( glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
+    GL_CHECK( glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE));
 
     glDisable(GL_TEXTURE_2D);
     return result;
@@ -142,11 +142,13 @@ void Model::loadFile(const char *name)
     lib3ds_file_eval(_file3ds, 0); // set current frame to 0
     // apply texture to all meshes that have texels
     Lib3dsMesh *mesh;
-    for(mesh = _file3ds->meshes;mesh != 0;mesh = mesh->next)
+    for(mesh = _file3ds->meshes; mesh != 0;mesh = mesh->next)
     {
         if(mesh->texels) //if there's texels for the mesh
             ApplyTexture(mesh); //then apply texture to it
     }
+
+    prepareNodes();
 }
 
 void Model::prepareNodes()
@@ -178,26 +180,32 @@ void Model::prepareNode(Lib3dsNode *node)
 
     meshData._vertices.reserve(3 * mesh->points); // optimization
     meshData._normals.reserve(3 * mesh->points); // optimization
+    meshData._textureVertices.reserve(2 * mesh->points); // optimization
 
 
-    Lib3dsVector normals[3 *mesh->faces]; //alocate memory for our normals
+
+    Lib3dsVector normals[3 *mesh->faces]; // normals
     lib3ds_mesh_calculate_normals(mesh, normals); // calculate the normals of the mesh
+
     for (unsigned i = 0; i < mesh->points; ++i) {
         const Lib3dsVector &triangleVertice =mesh->pointL[i].pos;
         const Lib3dsVector &normal = normals[i];
 
 
-        meshData._vertices << triangleVertice[0];
-        meshData._vertices << triangleVertice[1];
-        meshData._vertices << triangleVertice[2];
+        meshData._vertices << triangleVertice[0]
+                << triangleVertice[1]
+                << triangleVertice[2];
 
-        meshData._normals << normal[0];
-        meshData._normals << normal[1];
-        meshData._normals << normal[2];
+        meshData._normals << normal[0]
+                << normal[1]
+                << normal[2];
 
-        _meshRadius = qMax(_meshRadius, length3dsVector(triangleVertice));
+        if (mesh->texels) {
+            Q_ASSERT(mesh->texels == mesh->points);
+            meshData._textureVertices << mesh->texelL[i][0]
+                    << mesh->texelL[i][1];
+        }
     }
-//    free(normals); // free up memory
 
     for(unsigned p = 0;p < mesh->faces;p++)
     {
@@ -205,38 +213,26 @@ void Model::prepareNode(Lib3dsNode *node)
         Q_ASSERT(f);
         Lib3dsMaterial *mat = lib3ds_file_material_by_name(_file3ds, f->material);
         bool isTextureValid = mat && mesh->texels;
-        QString textureName;
-        if (isTextureValid)
-            textureName= mat->texture1_map.name;
 
         if(isTextureValid)
         {
+            QString textureName = mat->texture1_map.name;
             Q_ASSERT(_textureFilenamesIndexes.contains(textureName));
-            meshData._textureID = _textureFilenamesIndexes[textureName];
+            GLuint tmp = _textureFilenamesIndexes[textureName];
+            Q_ASSERT(meshData._textureID == -1 || meshData._textureID == (int)tmp);
+            meshData._textureID = tmp;
         }
 
         for(int i = 0;i < 3;i++)
         {
-            if(isTextureValid) {
-                meshData._textureVertices << mesh->texelL[f->points[i]][0];
-                meshData._textureVertices << mesh->texelL[f->points[i]][1];
-            }
-            meshData._indices << f->points[i];
+            Lib3dsWord verticeIndex = f->points[i];
+
+            meshData._indices << verticeIndex;
         }
     }
     glEnd();
     glEndList(); // end of list
 
-}
-
-void Model::initGL()
-{
-    static GLfloat diff[4] = { 0.75, 0.75, 0.75, 1.0 }; // color: white/grey
-    static GLfloat amb[4] = { 0.25, 0.25, 0.25, 1.0 }; //color: black/dark gray
-    static GLfloat spec[4] = { 0.0, 0.0, 0.0, 1.0 }; //color: completly black
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, diff);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, spec);
 }
 
 // what is basicly does is, set the properties of the texture for our mesh
@@ -264,27 +260,34 @@ void Model::ApplyTexture(Lib3dsMesh *mesh)
 void Model::renderModel()
 {
     Q_ASSERT(_file3ds);
+    glPushAttrib(GL_POLYGON_BIT);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    glDisable(GL_LIGHTING);
 
     glEnable(GL_TEXTURE_2D);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
 
+//    loadStaticMaterials();
+
+//    enableLightSources();
+
     foreach (const Mesh &mesh, _meshes)
         renderMesh(mesh);
+
+//    disableLightSources();
 
     glDisable(GL_TEXTURE_2D);
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    glPopAttrib();
 }
 
 void Model::renderMesh(const Mesh &mesh)
 {
-    GL_CHECK( glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE));
+    GL_CHECK( glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE));
     GL_CHECK( glBindTexture(GL_TEXTURE_2D, mesh._textureID));
     GL_CHECK( glVertexPointer(3, GL_FLOAT, 0, mesh._vertices.data()));
     GL_CHECK( glTexCoordPointer(2, GL_FLOAT, 0, mesh._textureVertices.data()));
@@ -368,6 +371,8 @@ void Model::centerModel()
     QVector3D bottomLeft = getMin();
     QVector3D topRight = getMax();
 
+    _meshRadius = (topRight-bottomLeft).length() / 2.2;
+
     QVector3D center = (bottomLeft + topRight) / 2;
 
     for (int i = 0; i < _meshes.size(); ++i)
@@ -382,4 +387,72 @@ void Model::centerModel()
             vertices[i+2] -= center.z();
         }
     }
+}
+
+void Model::enableLightSources()
+{
+    GL_CHECK( glEnable(GL_LIGHTING));
+
+    foreach (const LightSource &light, _lightSources) {
+        GL_CHECK( glEnable(light.lightID));
+        GLfloat light_position[] = {
+            light.position.x(),
+            light.position.y(),
+            light.position.z(),
+            0.0f };
+
+        GL_CHECK( glLightfv( light.lightID, GL_POSITION, light_position ));
+    }
+}
+
+void Model::disableLightSources()
+{
+    GL_CHECK( glDisable(GL_LIGHTING));
+
+    foreach (const LightSource &light, _lightSources) {
+        GL_CHECK( glDisable(light.lightID));
+    }
+}
+
+void Model::loadStaticMaterials()
+{
+    // Specify a global ambient
+    static const  GLfloat globalAmbient[] = { 1, 1, 1, 1.0 };
+
+    static const GLfloat s_Ambient[4] = {0.0, 0.0, 0.0, 1.0};
+    static const GLfloat s_Diffuse[4] = {0, 0, 0, 1};
+    static const GLfloat s_Specular[4] = {0, 0, 0, 1};
+
+    static const GLfloat m_Ambient[4] = {1, 1, 1, 1};
+    static const GLfloat m_Diffuse[4] = {0, 0, 0, 1};
+    static const GLfloat m_Specular[4] = {0, 0, 0, 1};
+    static const GLfloat m_Emission[4] = {0.0, 0.0, 0.0, 1};
+//    static const GLfloat m_Shininess = 50.0;
+
+    GL_CHECK( glLightModelfv( GL_LIGHT_MODEL_AMBIENT, globalAmbient );)
+
+    GL_CHECK( glEnable( GL_LIGHT0 );                           )
+    GL_CHECK( glLightfv( GL_LIGHT0, GL_AMBIENT, s_Ambient);    )
+    GL_CHECK( glLightfv( GL_LIGHT0, GL_DIFFUSE, s_Diffuse);    )
+    GL_CHECK( glLightfv( GL_LIGHT0, GL_SPECULAR, s_Specular ); )
+
+    GL_CHECK( glMaterialfv( GL_FRONT_AND_BACK, GL_AMBIENT, m_Ambient );    )
+    GL_CHECK( glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, m_Diffuse );    )
+    GL_CHECK( glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, m_Specular );  )
+    GL_CHECK( glMaterialfv( GL_FRONT_AND_BACK, GL_EMISSION, m_Emission );  )
+//    GL_CHECK( glMaterialf( GL_FRONT_AND_BACK, GL_SHININESS, m_Shininess ); )
+}
+
+void Model::updateLightSource(GLuint lightID, const QVector3D &newPosition)
+{
+    for (int i = 0; i < _lightSources.size(); ++i)
+    {
+        LightSource &light = _lightSources[i];
+        if (light.lightID == lightID) {
+            light.position = newPosition;
+            return;
+        }
+    }
+    // register light source
+    _lightSources << LightSource(lightID, newPosition);
 }

@@ -35,13 +35,22 @@ namespace lib3ds_qt {
 
 struct Mesh
 {
-    GLuint _textureID;
+    int _textureID;
     QVector<GLfloat> _vertices;
     QVector<GLushort> _indices;
     QVector<GLfloat> _normals;
     QVector<GLfloat> _textureVertices;
 
     Mesh() : _textureID(-1) {}
+};
+
+struct LightSource
+{
+    GLuint lightID;
+    QVector3D position;
+
+    LightSource(GLuint id = -1, const QVector3D &pos = QVector3D())
+        : lightID(id), position(pos) {}
 };
 
 /// This class can load a model, and then apply a texture on it to finally render it
@@ -56,7 +65,6 @@ public:
 
     void prepareNodes();
     void prepareNode(Lib3dsNode *node);
-    void initGL();
     void renderModel();
     void renderMesh(const Mesh &mesh);
     /// It applies a texture to mesh ,according to the data that mesh contains
@@ -71,6 +79,13 @@ public:
     QVector3D getMin() const;
     QVector3D getMax() const;
     void centerModel();
+
+    void enableLightSources();
+    void disableLightSources();
+
+    void loadStaticMaterials();
+
+    void updateLightSource(GLuint lightID, const QVector3D &newPosition);
 private:
     Lib3dsFile *_file3ds; /**< file holds the data of the model */
     QString _fileName; /**< It's the filename of the model */
@@ -79,6 +94,7 @@ private:
 
     QList<Mesh> _meshes;
     QList<Lib3dsNode*> _nodes;
+    QList<LightSource> _lightSources;
     double _meshRadius;
     bool _isValid;
 };

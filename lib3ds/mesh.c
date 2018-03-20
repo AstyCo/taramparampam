@@ -572,7 +572,7 @@ lib3ds_mesh_dump(Lib3dsMesh *mesh)
   Lib3dsVector p;
 
   ASSERT(mesh);
-  printf("  %s vertices=%ld faces=%lu\n",
+  printf("  %s vertices=%u faces=%u\n",
     mesh->name,
     mesh->points,
     mesh->faces
